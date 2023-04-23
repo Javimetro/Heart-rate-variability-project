@@ -20,7 +20,7 @@ class Rotary:
         self.rotary_percentage = 0
         self.brightness_min = 0
         self.brightness_max = 65535
-        self.brightness = 32768
+        self.brightness = 655
         menu_index = 0  # initialize menu_index to 0
 
     def select_led(self):
