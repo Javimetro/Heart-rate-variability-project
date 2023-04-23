@@ -29,6 +29,13 @@ class Rotary:
         led_options = ["LED1", "LED2", "LED3"]
         led_index = 0
         while True:
+            oled.fill(0)
+            for i in range(len(led_options)):
+                oled.text('LED SELECTION',20,0)
+                if i == led_index:
+                    oled.text(">", 0, i * 10 + 20)
+                oled.text(led_options[i], 10, i * 10 + 20)
+            oled.show()
             value_A = self.rot_A_pin.value()
             value_B = self.rot_B_pin.value()
             value_button = self.rot_button_pin.value()
@@ -75,8 +82,14 @@ class Rotary:
         oled = SSD1306_I2C(128, 64, i2c)
         menu_options = ["BRIGHTNESS", "LEDS"]
         menu_index = 0
-
+        
+        oled.fill(0)
+        for i in range(len(menu_options)):
+            oled.text('MENU',40,0)
+            oled.text(menu_options[i], 10, i * 10 + 20)
+        oled.show()
         while True:
+            
             value_A = self.rot_A_pin.value()
             value_B = self.rot_B_pin.value()
             value_button = self.rot_button_pin.value()
@@ -125,6 +138,12 @@ class Rotary:
         
         # Rotate the rotary encoder to adjust brightness
         while True:
+            oled.fill(0)
+            oled.text("BRIGHTNESS", 0, 10)
+            oled.text(f"{self.brightness_percentage}%", 0, 30)
+            oled.fill_rect(0, 50, int(self.brightness_percentage * 1.28), 10, 1)
+            oled.show()
+            
             value_A = self.rot_A_pin.value()
             value_B = self.rot_B_pin.value()
             value_button = self.rot_button_pin.value()
@@ -145,12 +164,6 @@ class Rotary:
                 self.brightness_percentage = int(
                     (self.brightness - self.brightness_min) / 
                     (self.brightness_max - self.brightness_min) * 100)
-                oled.fill(0)
-                oled.text("BRIGHTNESS", 0, 10)
-                oled.text(f"{self.brightness_percentage}%", 0, 30)
-                oled.fill_rect(0, 50, int(self.brightness_percentage * 1.28), 10, 1)
-
-                oled.show()
                 
                 # Change the brightness of the leds.
                 duty_cycle = int((self.brightness_percentage / 100) * 65535)
@@ -168,17 +181,18 @@ class Rotary:
 
 def main(led):
     while True:
-        brightness = rotary.brightness_selection(led)
         menu = rotary.menu_selection()
         if menu == "BRIGHTNESS":
             brightness = rotary.brightness_selection(led)
         else:
             led = rotary.select_led()
+            brightness = rotary.brightness_selection(led)
         
     
 led1 = LED(20)
 led2 = LED(21)
 led3 = LED(22)
 rotary = Rotary(10, 11, 12, [led1, led2, led3])    
-led = rotary.select_led()    
+led = rotary.select_led()
+brightness = rotary.brightness_selection(led)
 main = main(led)
