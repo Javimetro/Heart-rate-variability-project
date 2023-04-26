@@ -5,21 +5,22 @@ import machine
 from ssd1306 import SSD1306_I2C
 from machine import Pin, I2C
 
-ssid = "KME670Group6"    # Enter your WiFi SSID here
-password = "NuuskaMuikkunen666"   # Enter your WiFi password here
+ssid = "KME670Group6"    # WiFi SSID
+password = "NuuskaMuikkunen666"   # WiFi password
 
-def connect():
+def connect():  # function for connect to the WLAN
     #Connect to WLAN
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     wlan.connect(ssid, password)
     while wlan.isconnected() == False:
-        print('Waiting for connection...')
+        print('Waiting for connection...') #If does not connect, this text is displayed
         time.sleep(1)
     ip = wlan.ifconfig()[0]
     print(f'Connected on {ip}')
     return ip
 
+# OLED BUS
 i2c = I2C(1, sda=Pin(14), scl=Pin(15), freq=400000)
 oled = SSD1306_I2C(128, 64, i2c)
 
@@ -31,6 +32,6 @@ try:
     oled.show()
     
     
-except OSError as e:
+except OSError as e: #If there is not connection, error message is displayed.
     print("Error connecting to WiFi:", e)
     machine.reset()
